@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly KEY_PATH="${CIQ_DEVELOPER_KEY:-.ciq/developer_key.der}"
+# The installed SDK device bundle currently provides this Fenix 8 Pro target.
+# Override with CIQ_DEVICE after installing a different device package.
+readonly DEVICE="${CIQ_DEVICE:-fenix8pro47mm}"
+readonly OUTPUT="${CIQ_OUTPUT:-HFCompanion.prg}"
+
+if ! command -v monkeyc >/dev/null 2>&1; then
+    printf '%s\n' \
+        'monkeyc is unavailable. Run /opt/connectiq-sdk-manager/bin/sdkmanager' \
+        'in the container and install an SDK first.' >&2
+    exit 1
+fi
+
+if [[ ! -f "${KEY_PATH}" ]]; then
+    printf 'Developer key not found: %s\nRun scripts/ciq-keygen first.\n' "${KEY_PATH}" >&2
+    exit 1
+fi
+
+exec monkeyc -f monkey.jungle -d "${DEVICE}" -o "${OUTPUT}" -y "${KEY_PATH}"

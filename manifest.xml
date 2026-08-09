@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HF Companion - HF band propagation conditions.
+
+    NOTE ON PRODUCT IDS:
+    The Fenix 8 Pro product ids below are the expected values, but Connect IQ
+    product ids must match the SDK exactly. Before building, open the project in
+    VS Code and run "Monkey C: Edit Products" (Ctrl/Cmd-Shift-P) to insert/verify
+    the correct ids for your installed SDK. Add fenix847mm/fenix851mm etc. there
+    too if you want to target the non-Pro Fenix 8 as well - the app is
+    display-agnostic and will work on any round device.
+-->
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+    <iq:application
+        entry="HFCompanionApp"
+        id="65c0e86b3c1f4ac7b0f8dc10167abf4d"
+        launcherIcon="@Drawables.LauncherIcon"
+        minSdkVersion="3.2.0"
+        name="@Strings.AppName"
+        type="watch-app">
+
+        <iq:products>
+            <iq:product id="fenix8pro51mm"/>
+            <iq:product id="fenix8pro47mm"/>
+        </iq:products>
+
+        <iq:permissions>
+            <iq:uses-permission id="Communications"/>
+        </iq:permissions>
+
+        <iq:languages>
+            <iq:language>eng</iq:language>
+        </iq:languages>
+    </iq:application>
+</iq:manifest>

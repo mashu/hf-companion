@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly KEY_DIR="${1:-.ciq}"
+readonly PEM_KEY="${KEY_DIR}/developer_key.pem"
+readonly DER_KEY="${KEY_DIR}/developer_key.der"
+
+if [[ -e "${PEM_KEY}" || -e "${DER_KEY}" ]]; then
+    printf 'Refusing to overwrite an existing developer key in %s.\n' "${KEY_DIR}" >&2
+    exit 1
+fi
+
+mkdir --parents "${KEY_DIR}"
+umask 077
+openssl genrsa -out "${PEM_KEY}" 4096
+openssl pkcs8 -topk8 -inform PEM -outform DER -in "${PEM_KEY}" -out "${DER_KEY}" -nocrypt
+printf 'Generated %s (keep both key files private).\n' "${KEY_DIR}"

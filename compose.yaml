@@ -1,0 +1,29 @@
+services:
+  ciq:
+    build:
+      context: .
+      args:
+        UID: ${CIQ_UID:-1000}
+        GID: ${CIQ_GID:-1000}
+    image: hfcompanion-ciq:jammy
+    environment:
+      DISPLAY: ${DISPLAY:-}
+      CIQ_DEVICE: ${CIQ_DEVICE:-}
+      CIQ_OUTPUT: ${CIQ_OUTPUT:-}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace
+      # This is the SDK Manager download, not a complete SDK. Start sdkmanager
+      # once to install an SDK into the persistent ciq-sdk volume below.
+      - ${HOME}/Downloads/connect-iq:/opt/connectiq-sdk-manager:ro
+      - ciq-sdk:/home/ciq/.Garmin
+      - ciq-config:/home/ciq/.config
+      - ciq-cache:/home/ciq/.cache
+      # Optional X11 support for the graphical SDK Manager and simulator.
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+volumes:
+  ciq-sdk:
+  ciq-config:
+  ciq-cache:

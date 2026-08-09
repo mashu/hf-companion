@@ -1,0 +1,8 @@
+<properties>
+    <!-- New key prevents upgrades from inheriting the former auto-refresh default. -->
+    <property id="automaticRefreshEnabled" type="number">0</property>
+    <!-- Minimum minutes between automatic refreshes (only used in mode 0) -->
+    <property id="autoRefreshMinutes" type="number">60</property>
+    <!-- A manual operator-location label. Garmin Connect keeps the last value. -->
+    <property id="locationLabel" type="string">Not set</property>
+</properties>

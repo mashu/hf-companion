@@ -1,0 +1,14 @@
+<settings>
+    <setting propertyKey="@Properties.automaticRefreshEnabled" title="Data refresh">
+        <settingConfig type="list">
+            <listEntry value="0">Manual only (tap)</listEntry>
+            <listEntry value="1">When opened (opt-in, if stale)</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.autoRefreshMinutes" title="Min minutes between auto refresh">
+        <settingConfig type="numeric" min="15" max="1440"/>
+    </setting>
+    <setting propertyKey="@Properties.locationLabel" title="Operator location (optional)">
+        <settingConfig type="alphaNumeric" maxLength="32"/>
+    </setting>
+</settings>

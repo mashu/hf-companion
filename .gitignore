@@ -1,0 +1,13 @@
+.ciq/
+*.prg
+*.iq
+*.prg.debug.xml
+*.mir
+gen/
+internal-mir/
+external-mir/
+simulator-*.png
+simulator-*.xwd
+HFCompanion*-settings.json
+log.txt
+*.log

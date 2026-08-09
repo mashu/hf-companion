@@ -1,8 +1,9 @@
 # HF Companion — HF Propagation for Garmin Fenix 8 Pro
 
 A stylish, dark, at-a-glance view of current HF band propagation conditions on
-your wrist. Built for the **Fenix 8 Pro 51mm** (454×454 AMOLED) and works on any
-round Connect IQ device.
+your wrist. Built for the **Fenix 8 Pro 51mm** and **Fenix 8 51mm** (both
+454×454 AMOLED), with their 47mm counterparts covered by Garmin's shared
+Connect IQ product IDs.
 
 Data comes from **N0NBH's solar-terrestrial feed** at
 [hamqsl.com](https://www.hamqsl.com/solar.html) — the same source used by most
@@ -101,13 +102,19 @@ refresh). Leaving the app costs nothing.
 
 To verify on your own hardware, the Connect IQ simulator has a **power profiler**
 (Simulation → Battery Drain / Profiler in the SDK) — run it against
-`fenix8pro51mm` to see the estimated drain for a viewing session.
+`fenix8pro47mm`, which also represents Fenix 8 Pro 51mm, to see the estimated
+drain for a viewing session.
 
 ## Publishing to the Connect IQ Store
 
-HF Companion is a `watch-app`, not a watch face. The manifest currently
-packages `fenix8pro47mm` and `fenix8pro51mm`; add and test any additional
-product ids before export.
+HF Companion is a `watch-app`, not a watch face. The manifest packages the two
+454×454 AMOLED product groups:
+
+- `fenix8pro47mm` — Fenix 8 Pro **47mm and 51mm**.
+- `fenix847mm` — non-Pro Fenix 8 **47mm and 51mm**.
+
+Garmin uses the 47mm suffix as the shared Connect IQ identifier; there is no
+separate `fenix8pro51mm` or `fenix851mm` product ID to add.
 
 The on-watch launcher artwork is
 `resources/drawables/launcher_icon.png` (currently 80×80 PNG), referenced by
@@ -128,10 +135,9 @@ CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose run --rm ciq bash -lc \
 ```
 
 The installed Docker SDK inventory must recognise every product listed in
-`manifest.xml`. At present it supplies `fenix8pro47mm` but not
-`fenix8pro51mm`, so the export above is intentionally blocked until the 51mm
-device package is installed through SDK Manager (or that unsupported target is
-removed from the manifest). Do not submit a package claiming untested devices.
+`manifest.xml`. SDK 9.2.0 provides both `fenix8pro47mm` and `fenix847mm`, which
+cover the intended 51mm AMOLED models. The separately named
+`fenix8solar51mm` is a 280×280 MIP device and is intentionally excluded.
 
 Keep `.ciq/developer_key.der` private and retain it permanently: future store
 updates must be signed with the same key. Register a Garmin Developer account,
@@ -144,18 +150,18 @@ The upload is validated before the listing fields become available.
 You need the free **Connect IQ SDK** and the **Monkey C** extension for VS Code.
 
 1. Install the SDK via the [Connect IQ SDK Manager](https://developer.garmin.com/connect-iq/sdk/)
-   and download a **System 8 device** bundle that includes the Fenix 8 Pro (you
-   need a recent SDK — API level 5.2.0 devices require SDK ≥ 8.3.0).
+   and download a **System 8 device** bundle that includes Fenix 8 and Fenix 8
+   Pro (API level 5.2.0 devices require SDK ≥ 8.3.0).
 2. Open this folder in VS Code.
-3. **Verify the product ids** (important — see caveat below):
-   `Ctrl/Cmd-Shift-P` → **"Monkey C: Edit Products"** → search "fenix 8 pro" and
-   tick the 51mm (and 47mm) entries. This rewrites `manifest.xml` with the exact
-   ids the SDK expects.
+3. **Verify the product ids**:
+   `Ctrl/Cmd-Shift-P` → **"Monkey C: Edit Products"** → select Fenix 8 Pro
+   47mm and Fenix 8 47mm. Garmin uses these shared IDs for the corresponding
+   51mm AMOLED models.
 4. Build a sideload package:
-   `Ctrl/Cmd-Shift-P` → **"Monkey C: Build for Device"** → pick the Fenix 8 Pro.
-   Or from the CLI:
+   `Ctrl/Cmd-Shift-P` → **"Monkey C: Build for Device"** → pick Fenix 8 Pro
+   47mm (for a Pro 51mm) or Fenix 8 47mm (for a non-Pro 51mm). Or from the CLI:
    ```
-   monkeyc -f monkey.jungle -d fenix8pro51mm -o HFCompanion.prg -y <your_developer_key.der>
+   monkeyc -f monkey.jungle -d fenix8pro47mm -o HFCompanion.prg -y <your_developer_key.der>
    ```
 5. Copy the resulting `HFCompanion.prg` to `GARMIN/APPS/` on the watch over USB, then
    eject. It appears in the activity/app list.
@@ -194,8 +200,8 @@ CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose build
    CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose run --rm ciq \
      /opt/connectiq-sdk-manager/bin/sdkmanager
    ```
-   Install an SDK (8.3.0 or newer) and the Fenix 8 Pro device package. The
-   downloaded SDK is retained in Docker's `ciq-sdk` volume.
+   Install an SDK (8.3.0 or newer) and the Fenix 8 / Fenix 8 Pro device
+   package. The downloaded SDK is retained in Docker's `ciq-sdk` volume.
 2. Generate a local signing key once:
    ```sh
    CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose run --rm ciq scripts/ciq-keygen
@@ -206,40 +212,28 @@ CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose build
    CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose run --rm ciq scripts/ciq-build
    ```
 
-The installed Fenix 8 Pro bundle currently provides `fenix8pro47mm`, which is
-the build helper's default target. Set `CIQ_DEVICE` after installing another
-device package. The simulator is graphical; use the native SDK/VS Code
-integration for the most reliable simulator and USB-device workflows.
+The installed Fenix 8 bundle provides `fenix8pro47mm` (Pro 47mm/51mm) and
+`fenix847mm` (non-Pro 47mm/51mm). The build helper's default is
+`fenix8pro47mm`; use `CIQ_DEVICE=fenix847mm` to build the non-Pro target. The
+simulator is graphical; use the native SDK/VS Code integration for the most
+reliable simulator and USB-device workflows.
 
-#### Fenix 8 Pro 51mm simulator
+#### Fenix 8 51mm target mapping
 
-SDK 9.2.0's currently installed device inventory does not include
-`fenix8pro51mm`. Install it only if SDK Manager offers that exact device after
-updating the SDK/device package. Keep the first command running, then use a
-second terminal to load the app into that same simulator container:
+No additional SDK Manager package is needed for the 51mm AMOLED models. In
+SDK 9.2.0, Garmin maps each 51mm watch to the same product definition as its
+47mm sibling:
 
-```sh
-CIQ_DEVICE=fenix8pro51mm CIQ_OUTPUT=HFCompanion-fenix8pro51mm.prg \
-  docker compose run --rm ciq scripts/ciq-build
-
-xhost +local:docker
-CIQ_UID=$(id -u) CIQ_GID=$(id -g) docker compose run --rm --name ciq-sim ciq simulator
-```
-
-```sh
-docker exec -d --user ciq ciq-sim bash -lc '
-  sdk_root="$(< "$HOME/.Garmin/ConnectIQ/current-sdk.cfg")"
-  exec "$sdk_root/bin/monkeydo" \
-    /workspace/HFCompanion-fenix8pro51mm.prg fenix8pro51mm
-'
-```
+- Fenix 8 Pro 51mm → `fenix8pro47mm` (454×454 AMOLED)
+- Fenix 8 51mm → `fenix847mm` (454×454 AMOLED)
+- Fenix 8 Solar 51mm → `fenix8solar51mm` (280×280 MIP; not packaged)
 
 ## Two things to check if it doesn't work on the watch
 
-1. **Product ids.** The ids in `manifest.xml` (`fenix8pro51mm`, `fenix8pro47mm`)
-   are the expected values, but Connect IQ ids must match your SDK exactly. If a
-   build error says a product id is invalid, use **"Monkey C: Edit Products"** to
-   regenerate them (step 3 above).
+1. **Product ids.** The current `manifest.xml` IDs are `fenix8pro47mm` and
+   `fenix847mm`; both match SDK 9.2.0 and cover their 51mm AMOLED variants. If
+   a build error says a product id is invalid, use **"Monkey C: Edit Products"**
+   to select IDs recognised by that SDK.
 
 2. **Response content-type.** The app requests the feed as `TEXT_PLAIN`. hamqsl
    serves it as `text/xml`, which the simulator and most firmware accept. If your
@@ -264,6 +258,10 @@ source/Gfx.mc                    gradient + arc primitives (no bitmaps)
 source/Theme.mc                  palette and condition→colour mapping
 PROFILING.md                     how to measure CPU / memory / battery
 ```
+
+## License
+
+This project's source code is MIT-licensed; the Garmin Connect IQ SDK remains proprietary.
 
 ## Credits & etiquette
 

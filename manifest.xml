@@ -3,12 +3,11 @@
     HF Companion - HF band propagation conditions.
 
     NOTE ON PRODUCT IDS:
-    The Fenix 8 Pro product ids below are the expected values, but Connect IQ
-    product ids must match the SDK exactly. Before building, open the project in
-    VS Code and run "Monkey C: Edit Products" (Ctrl/Cmd-Shift-P) to insert/verify
-    the correct ids for your installed SDK. Add fenix847mm/fenix851mm etc. there
-    too if you want to target the non-Pro Fenix 8 as well - the app is
-    display-agnostic and will work on any round device.
+    Garmin groups the 47mm and 51mm AMOLED models under shared Connect IQ
+    product ids. fenix8pro47mm covers Fenix 8 Pro 47mm and 51mm; fenix847mm
+    covers the non-Pro Fenix 8 47mm and 51mm. These IDs are present in SDK 9.2.0.
+    Fenix 8 Solar 51mm is a separate 280x280 MIP target (fenix8solar51mm) and
+    is intentionally not packaged by this 454x454 AMOLED-focused app.
 -->
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
     <iq:application
@@ -20,8 +19,8 @@
         type="watch-app">
 
         <iq:products>
-            <iq:product id="fenix8pro51mm"/>
             <iq:product id="fenix8pro47mm"/>
+            <iq:product id="fenix847mm"/>
         </iq:products>
 
         <iq:permissions>
